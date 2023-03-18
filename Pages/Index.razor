@@ -1,0 +1,43 @@
+﻿@page "/"
+
+@inject IHttpContextAccessor HttpContextAccessor
+
+@code {
+    private string _cookieValue;
+
+    protected override void OnInitialized()
+    {
+        // Read cookie value
+        if (HttpContextAccessor.HttpContext.Request.Cookies.TryGetValue("myCookie", out string cookieValue))
+        {
+            _cookieValue = cookieValue;
+        }
+    }
+
+    private void SetCookie()
+    {
+        // Set cookie value
+        HttpContextAccessor.HttpContext.Response.Cookies.Append("myCookie", "cookie value", new CookieOptions
+            {
+                Expires = DateTime.Now.AddDays(1)
+            });
+
+        // Update cookie value
+        _cookieValue = "cookie value";
+    }
+}
+
+<button @onclick="SetCookie">Set Cookie</button>
+
+@if (!string.IsNullOrEmpty(_cookieValue))
+{
+    <p>Cookie value: @_cookieValue</p>
+
+
+
+    /* In this sample, we use the IHttpContextAccessor to access the current HTTP context and read or set cookies. In the OnInitialized method, we read the value of a cookie named "myCookie" and store it in the _cookieValue variable.
+    In the SetCookie method, we set the value of the "myCookie" cookie to "cookie value" and update the _cookieValue variable accordingly.
+    We also use a button to call the SetCookie method and display the current value of the _cookieValue variable, if it's not null or empty. 
+    Note that we set the expiration of the cookie to one day from now, using the Expires property of the CookieOptions object passed to the Append method. */
+}
+  
